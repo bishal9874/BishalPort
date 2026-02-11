@@ -1,10 +1,9 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { db } from '@/lib/firebase';
-import { collection, query, orderBy, getDocs, addDoc, Timestamp, where } from 'firebase/firestore';
+import { collection, query, orderBy, getDocs, addDoc, Timestamp } from 'firebase/firestore';
 import { formatDistanceToNow } from 'date-fns';
 import { Clock, CheckCircle, UploadCloud, AlertCircle, FileText, Link as LinkIcon, ArrowRight, X } from 'lucide-react';
-import Link from 'next/link';
 
 interface Assignment {
     id: string;
@@ -31,7 +30,6 @@ export default function StudentPortal() {
     useEffect(() => {
         const fetchAssignments = async () => {
             try {
-                // Fetch assignments that haven't passed deadline (optional filter, currently fetching all sorted by deadline)
                 const q = query(collection(db, "assignments"), orderBy("deadline", "asc"));
                 const snapshot = await getDocs(q);
                 const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Assignment[];
@@ -65,6 +63,7 @@ export default function StudentPortal() {
     };
 
     const isExpired = (deadline: any) => {
+        if (!deadline) return false;
         return new Date().getTime() > new Date(deadline.seconds * 1000).getTime();
     };
 
@@ -87,7 +86,7 @@ export default function StudentPortal() {
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {assignments.map((task) => {
                             const expired = isExpired(task.deadline);
-                            const timeLeft = !expired ? formatDistanceToNow(new Date(task.deadline.seconds * 1000), { addSuffix: true }) : "Closed";
+                            const timeLeft = !expired && task.deadline ? formatDistanceToNow(new Date(task.deadline.seconds * 1000), { addSuffix: true }) : "Closed";
 
                             return (
                                 <div key={task.id} className={`bg-white dark:bg-zinc-900 border rounded-2xl p-6 flex flex-col transition-all hover:shadow-lg ${expired ? 'opacity-70 border-zinc-200 dark:border-white/5' : 'border-zinc-200 dark:border-white/10'}`}>
@@ -101,10 +100,18 @@ export default function StudentPortal() {
                                         </div>
                                     </div>
 
-                                    <h3 className="text-xl font-bold mb-3 line-clamp-2">{task.title}</h3>
-                                    <p className="text-zinc-600 dark:text-zinc-400 text-sm line-clamp-3 mb-6 flex-grow">
-                                        {task.description}
-                                    </p>
+                                    <h3 className="text-xl font-bold mb-4">{task.title}</h3>
+
+                                    {/* Question Box */}
+                                    <div className="bg-zinc-50 dark:bg-zinc-800/50 p-4 rounded-xl mb-6 border border-zinc-100 dark:border-white/5 flex-grow">
+                                        <div className="flex items-center gap-2 mb-2 text-zinc-400">
+                                            <FileText size={14} />
+                                            <span className="text-xs font-semibold uppercase tracking-wider">Question / Task</span>
+                                        </div>
+                                        <p className="text-zinc-700 dark:text-zinc-300 whitespace-pre-wrap leading-relaxed">
+                                            {task.description}
+                                        </p>
+                                    </div>
 
                                     <button
                                         onClick={() => {
@@ -159,23 +166,23 @@ export default function StudentPortal() {
                                 <div className="grid grid-cols-2 gap-4">
                                     <div className="space-y-1">
                                         <label className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">Name</label>
-                                        <input required type="text" placeholder="John Doe"
+                                        <input required type="text" placeholder="Your Name"
                                             value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })}
                                             className="w-full p-3 bg-zinc-50 dark:bg-black border border-zinc-200 dark:border-white/10 rounded-xl outline-none focus:border-orange-500 transition-colors" />
                                     </div>
                                     <div className="space-y-1">
                                         <label className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">Roll No</label>
-                                        <input required type="text" placeholder="MCA/23/042"
+                                        <input required type="text" placeholder="Your ID"
                                             value={formData.rollNo} onChange={e => setFormData({ ...formData, rollNo: e.target.value })}
                                             className="w-full p-3 bg-zinc-50 dark:bg-black border border-zinc-200 dark:border-white/10 rounded-xl outline-none focus:border-orange-500 transition-colors" />
                                     </div>
                                 </div>
 
                                 <div className="space-y-1">
-                                    <label className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">Drive/GitHub Link</label>
+                                    <label className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">File Link (Docs/Drive)</label>
                                     <div className="relative">
                                         <LinkIcon className="absolute left-3 top-3.5 text-zinc-400" size={16} />
-                                        <input required type="url" placeholder="https://docs.google.com/..."
+                                        <input required type="url" placeholder="Paste link here..."
                                             value={formData.link} onChange={e => setFormData({ ...formData, link: e.target.value })}
                                             className="w-full pl-10 pr-4 py-3 bg-zinc-50 dark:bg-black border border-zinc-200 dark:border-white/10 rounded-xl outline-none focus:border-orange-500 transition-colors" />
                                     </div>
