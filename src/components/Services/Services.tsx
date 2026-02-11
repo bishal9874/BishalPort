@@ -78,7 +78,7 @@ export default function Services() {
                 <div className="flex flex-wrap justify-center gap-6">
                     {services.map((service, idx) => (
                         <Reveal key={idx} delay={idx * 100} width="100%" className="w-full max-w-md flex-shrink-0">
-                            <div className="group relative bg-zinc-50 dark:bg-zinc-900/50 backdrop-blur-sm border border-zinc-200 dark:border-white/10 rounded-3xl p-8 hover:-translate-y-2 transition-all duration-300 hover:shadow-xl dark:shadow-none h-full flex flex-col">
+                            <div className="group relative bg-zinc-50 dark:bg-zinc-900/50 backdrop-blur-sm border border-zinc-200 dark:border-white/10 rounded-3xl p-8 hover:-translate-y-2 transition-all duration-300 hover:shadow-xl dark:shadow-none h-full flex flex-col items-center text-center">
                                 <div className={`w-16 h-16 rounded-2xl ${service.bg} ${service.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
                                     {service.icon}
                                 </div>
@@ -88,9 +88,9 @@ export default function Services() {
                                     {service.description}
                                 </p>
 
-                                <ul className="space-y-2 mb-8">
+                                <ul className="space-y-2 mb-8 w-full">
                                     {service.features.map((feature, i) => (
-                                        <li key={i} className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-500">
+                                        <li key={i} className="flex items-center justify-center gap-2 text-sm text-zinc-500 dark:text-zinc-500">
                                             <div className={`w-1.5 h-1.5 rounded-full ${service.color.replace('text-', 'bg-')}`} />
                                             {feature}
                                         </li>
