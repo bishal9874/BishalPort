@@ -62,7 +62,7 @@ export default function ChatWidget() {
     };
 
     return (
-        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+        <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end pointer-events-none">
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
@@ -70,10 +70,10 @@ export default function ChatWidget() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 20, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className="mb-4 w-[350px] sm:w-[400px] h-[500px] bg-white/80 dark:bg-black/80 backdrop-blur-xl border border-zinc-200 dark:border-white/10 rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+                        className="pointer-events-auto mb-2 sm:mb-4 w-[calc(100vw-2rem)] sm:w-[400px] h-[70vh] sm:h-[500px] bg-white/95 dark:bg-black/90 backdrop-blur-xl border border-zinc-200 dark:border-white/10 rounded-2xl shadow-2xl flex flex-col overflow-hidden origin-bottom-right"
                     >
                         {/* Header */}
-                        <div className="p-4 border-b border-zinc-200 dark:border-white/10 bg-gradient-to-r from-blue-600 to-purple-600 flex justify-between items-center text-white">
+                        <div className="p-4 border-b border-zinc-200 dark:border-white/10 bg-gradient-to-r from-blue-600 to-purple-600 flex justify-between items-center text-white shrink-0">
                             <div className="flex items-center gap-2">
                                 <Sparkles size={18} className="text-yellow-300 animate-pulse" />
                                 <span className="font-semibold">AI Assistant</span>
@@ -95,9 +95,9 @@ export default function ChatWidget() {
                                     className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                                 >
                                     <div
-                                        className={`max-w-[80%] p-3 rounded-2xl text-sm leading-relaxed ${msg.role === "user"
-                                                ? "bg-blue-600 text-white rounded-br-none"
-                                                : "bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 rounded-bl-none border border-zinc-200 dark:border-white/5"
+                                        className={`max-w-[85%] p-3 rounded-2xl text-sm leading-relaxed ${msg.role === "user"
+                                            ? "bg-blue-600 text-white rounded-br-none"
+                                            : "bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 rounded-bl-none border border-zinc-200 dark:border-white/5"
                                             }`}
                                     >
                                         {msg.text}
@@ -116,13 +116,13 @@ export default function ChatWidget() {
                         </div>
 
                         {/* Input */}
-                        <form onSubmit={handleSubmit} className="p-4 border-t border-zinc-200 dark:border-white/10 bg-zinc-50/50 dark:bg-black/50">
+                        <form onSubmit={handleSubmit} className="p-3 sm:p-4 border-t border-zinc-200 dark:border-white/10 bg-zinc-50/50 dark:bg-black/50 shrink-0">
                             <div className="relative flex items-center">
                                 <input
                                     type="text"
                                     value={input}
                                     onChange={(e) => setInput(e.target.value)}
-                                    placeholder="Ask about my projects..."
+                                    placeholder="Ask anything..."
                                     className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 rounded-full py-2.5 pl-4 pr-12 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-zinc-900 dark:text-white placeholder:text-zinc-400"
                                 />
                                 <button
@@ -142,19 +142,16 @@ export default function ChatWidget() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsOpen(!isOpen)}
-                className={`p-4 rounded-full shadow-lg transition-all duration-300 flex items-center justify-center ${isOpen
-                        ? "bg-zinc-800 dark:bg-zinc-700 text-white rotate-90 scale-0 opacity-0 absolute"
-                        : "bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-blue-500/25"
+                className={`pointer-events-auto p-4 rounded-full shadow-lg transition-all duration-300 flex items-center justify-center relative ${isOpen
+                    ? "bg-zinc-800 dark:bg-zinc-700 text-white rotate-90 scale-0 opacity-0 absolute"
+                    : "bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:shadow-blue-500/25"
                     }`}
             >
                 <MessageSquare size={24} fill="currentColor" />
+                {!isOpen && (
+                    <div className="absolute top-0 right-0 -mt-1 -mr-1 w-3 h-3 bg-red-500 rounded-full animate-ping" />
+                )}
             </motion.button>
-
-            {/* Floating button shown when open is toggled by condition above, but let's keep it simple: just one button that changes icon or hides */}
-            {/* Actually the presence animation handles the window. The button itself: */}
-            {!isOpen && (
-                <div className="absolute top-0 right-0 -mt-2 -mr-2 w-3 h-3 bg-red-500 rounded-full animate-ping" />
-            )}
         </div>
     );
 }
