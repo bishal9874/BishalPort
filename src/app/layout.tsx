@@ -19,6 +19,8 @@ export const metadata = {
   description: "Portfolio of Bishal Mondal - Experienced Technical Assistant and Full Stack Developer specializing in Flutter, IoT, and Modern Web Tech.",
 };
 
+import ChatWidget from "../components/ChatWidget";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -29,6 +31,7 @@ export default function RootLayout({
       <body className="antialiased font-sans">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
+          <ChatWidget />
         </ThemeProvider>
       </body>
     </html>
