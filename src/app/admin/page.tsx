@@ -20,13 +20,23 @@ export default function AdminPortal() {
     const [submissions, setSubmissions] = useState<any[]>([]);
     const [createdAssignments, setCreatedAssignments] = useState<any[]>([]);
 
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        // TODO: Move credentials to env vars for better security
-        if (creds.id === "admin" && creds.pass === "admin") {
-            setAuth(true);
-        } else {
-            alert("Invalid Credentials");
+        try {
+            const res = await fetch('/api/auth', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: creds.pass })
+            });
+
+            if (res.ok) {
+                setAuth(true);
+            } else {
+                alert("Access Denied: Invalid Password");
+            }
+        } catch (error) {
+            console.error("Login error", error);
+            alert("Login failed due to a network error.");
         }
     };
 
