@@ -13,6 +13,7 @@ const navLinks: NavLink[] = [
     { label: "Home", href: "#hero" },
     { label: "About", href: "#about" },
     { label: "Skills", href: "#skills" },
+    { label: "Services", href: "#services" },
     { label: "Projects", href: "#projects" },
     { label: "Contact", href: "#contact" },
 ];
@@ -62,8 +63,8 @@ export default function Navbar() {
         >
             <div
                 className={`max-w-5xl mx-auto flex items-center justify-between rounded-full transition-all duration-500 ${scrolled
-                        ? "bg-white/70 dark:bg-black/70 backdrop-blur-xl border border-zinc-200 dark:border-white/10 shadow-lg px-6 py-3"
-                        : "bg-transparent px-0 border-transparent"
+                    ? "bg-white/70 dark:bg-black/70 backdrop-blur-xl border border-zinc-200 dark:border-white/10 shadow-lg px-6 py-3"
+                    : "bg-transparent px-0 border-transparent"
                     }`}
             >
                 {/* Logo */}
@@ -81,8 +82,8 @@ export default function Navbar() {
                             href={link.href}
                             onClick={() => setActive(link.label)}
                             className={`relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 ${active === link.label
-                                    ? "text-zinc-900 bg-white shadow-md dark:bg-zinc-800 dark:text-white"
-                                    : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-white/5"
+                                ? "text-zinc-900 bg-white shadow-md dark:bg-zinc-800 dark:text-white"
+                                : "text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-white/5"
                                 }`}
                         >
                             {link.label}
@@ -141,8 +142,8 @@ export default function Navbar() {
                             setMenuOpen(false);
                         }}
                         className={`text-4xl font-bold tracking-tight transition-all duration-300 ${active === link.label
-                                ? "text-zinc-900 dark:text-white"
-                                : "text-zinc-400 dark:text-zinc-600 hover:text-zinc-900 dark:hover:text-zinc-200"
+                            ? "text-zinc-900 dark:text-white"
+                            : "text-zinc-400 dark:text-zinc-600 hover:text-zinc-900 dark:hover:text-zinc-200"
                             }`}
                         style={{ transitionDelay: `${idx * 50}ms` }}
                     >
