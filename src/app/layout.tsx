@@ -67,6 +67,7 @@ export const metadata: Metadata = {
 };
 
 import JsonLd from "../components/JsonLd";
+import ChatWidget from "../components/ChatWidget";
 
 export default function RootLayout({
   children,
