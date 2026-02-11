@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-    const siteUrl = "https://bishalmondal.dev"; // Update with your actual domain
+    const siteUrl = "https://bishal-port.vercel.app/"; // Update with your actual domain
 
     return [
         {

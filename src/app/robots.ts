@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
                 disallow: ["/api/", "/_next/"],
             },
         ],
-        sitemap: "https://bishalmondal.dev/sitemap.xml", // Update with your actual domain
+        sitemap: "https://bishal-port.vercel.app/sitemap.xml", // Update with your actual domain
     };
 }
