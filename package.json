@@ -11,6 +11,8 @@
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "@tailwindcss/postcss": "^4.1.18",
+    "date-fns": "^4.1.0",
+    "firebase": "^12.9.0",
     "framer-motion": "^12.34.0",
     "groq-sdk": "^0.37.0",
     "lucide-react": "^0.563.0",
