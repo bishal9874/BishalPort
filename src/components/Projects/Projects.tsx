@@ -48,7 +48,7 @@ const projects: Project[] = [
         category: "Mobile App",
         description: "Interactive campus utility app for orientation, navigation, and helpline, improving efficiency for 500+ students during admission.",
         tags: ["Flutter", "UX Design", "Campus"],
-        link: "https://play.google.com/store/search?q=obuddy&c=apps&hl=en_IN",
+        link: "https://play.google.com/store/apps/details?id=com.aucseapp.orientation",
         color: "text-green-500"
     },
     {
