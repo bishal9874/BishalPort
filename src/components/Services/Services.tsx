@@ -18,30 +18,30 @@ interface Service {
 }
 
 const services: Service[] = [
-    {
-        title: "Web Development",
-        description: "Modern, responsive websites built with Next.js, React, and Tailwind CSS. Focused on performance and SEO.",
-        icon: <Layout size={32} />,
-        features: ["Landing Pages", "Full Stack Apps", "E-commerce", "Performance Optimization"],
-        color: "text-blue-500",
-        bg: "bg-blue-500/10 border-blue-500/20"
-    },
-    {
-        title: "Mobile App Development",
-        description: "Cross-platform mobile applications using Flutter. Beautiful UI and native performance for iOS and Android.",
-        icon: <Smartphone size={32} />,
-        features: ["iOS & Android", "UI/UX Design", "API Integration", "State Management"],
-        color: "text-purple-500",
-        bg: "bg-purple-500/10 border-purple-500/20"
-    },
-    {
-        title: "IoT Solutions",
-        description: "End-to-end IoT prototyping from circuit design to cloud connectivity using Arduino and ESP32.",
-        icon: <Cpu size={32} />,
-        features: ["Circuit Design", "Firmware (C++)", "Sensors & Actuators", "Cloud Integration"],
-        color: "text-emerald-500",
-        bg: "bg-emerald-500/10 border-emerald-500/20"
-    },
+    // {
+    //     title: "Web Development",
+    //     description: "Modern, responsive websites built with Next.js, React, and Tailwind CSS. Focused on performance and SEO.",
+    //     icon: <Layout size={32} />,
+    //     features: ["Landing Pages", "Full Stack Apps", "E-commerce", "Performance Optimization"],
+    //     color: "text-blue-500",
+    //     bg: "bg-blue-500/10 border-blue-500/20"
+    // },
+    // {
+    //     title: "Mobile App Development",
+    //     description: "Cross-platform mobile applications using Flutter. Beautiful UI and native performance for iOS and Android.",
+    //     icon: <Smartphone size={32} />,
+    //     features: ["iOS & Android", "UI/UX Design", "API Integration", "State Management"],
+    //     color: "text-purple-500",
+    //     bg: "bg-purple-500/10 border-purple-500/20"
+    // },
+    // {
+    //     title: "IoT Solutions",
+    //     description: "End-to-end IoT prototyping from circuit design to cloud connectivity using Arduino and ESP32.",
+    //     icon: <Cpu size={32} />,
+    //     features: ["Circuit Design", "Firmware (C++)", "Sensors & Actuators", "Cloud Integration"],
+    //     color: "text-emerald-500",
+    //     bg: "bg-emerald-500/10 border-emerald-500/20"
+    // },
     {
         title: "Mentorship & Training",
         description: "Guiding students effectively in Computer Science subjects, Assignments, and Project development.",
@@ -75,9 +75,9 @@ export default function Services() {
                     </Reveal>
                 </div>
 
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="flex flex-wrap justify-center gap-6">
                     {services.map((service, idx) => (
-                        <Reveal key={idx} delay={idx * 100} width="100%">
+                        <Reveal key={idx} delay={idx * 100} width="100%" className="w-full max-w-md flex-shrink-0">
                             <div className="group relative bg-zinc-50 dark:bg-zinc-900/50 backdrop-blur-sm border border-zinc-200 dark:border-white/10 rounded-3xl p-8 hover:-translate-y-2 transition-all duration-300 hover:shadow-xl dark:shadow-none h-full flex flex-col">
                                 <div className={`w-16 h-16 rounded-2xl ${service.bg} ${service.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
                                     {service.icon}
