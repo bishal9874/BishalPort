@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import StarField from "./StarField";
 
 export default function Hero() {
@@ -18,6 +19,21 @@ export default function Hero() {
 
             {/* Content */}
             <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
+                {/* Profile Image */}
+                {/* <div className="relative w-32 h-32 mx-auto mb-8 group">
+                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full blur-lg opacity-50 group-hover:opacity-75 transition-opacity duration-300" />
+                    <div className="relative rounded-full overflow-hidden border-2 border-white/20 hover:border-white/50 transition-colors duration-300">
+                        <Image
+                            src="/profile.svg"
+                            alt="Bishal Mondal"
+                            width={128}
+                            height={128}
+                            className="object-cover w-full h-full transform transition-transform duration-500 group-hover:scale-110"
+                            priority
+                        />
+                    </div>
+                </div> */}
+
                 {/* Status Badge */}
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md mb-8 animate-fade-in hover:bg-white/10 transition-colors cursor-default">
                     <span className="relative flex h-2 w-2">
@@ -72,12 +88,12 @@ export default function Hero() {
                 </div>
 
                 {/* Scroll Indicator */}
-                <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-3 animate-bounce opacity-50 hover:opacity-100 transition-opacity cursor-pointer">
+                {/* <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-3 animate-bounce opacity-50 hover:opacity-100 transition-opacity cursor-pointer">
                     <span className="text-[10px] uppercase tracking-[0.3em] text-neutral-500 font-medium">
                         Scroll
                     </span>
                     <div className="w-[1px] h-16 bg-gradient-to-b from-neutral-500 to-transparent" />
-                </div>
+                </div> */}
             </div>
         </section>
     );

@@ -1,4 +1,5 @@
 "use client";
+import { ExternalLink, Github, Folder, ArrowUpRight } from "lucide-react";
 
 interface Project {
     title: string;
@@ -7,86 +8,95 @@ interface Project {
     tags: string[];
     link: string;
     color: string;
-    borderColor: string;
 }
 
 const projects: Project[] = [
     {
         title: "Bathroom Light Automation",
         category: "IoT / Arduino",
-        description: "Multi-user responsive lighting system with motion detection. Reduced energy consumption by 15%.",
+        description: "Multi-user responsive lighting system with motion detection. Reduced energy consumption by 15% through smart sensing algorithms.",
         tags: ["Arduino", "Sensors", "C++", "Hardware"],
         link: "https://github.com/bishal9874",
-        color: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-500",
-        borderColor: "border-yellow-500/20"
+        color: "text-amber-500"
     },
     {
         title: "CovidCheck! App",
         category: "Mobile App",
-        description: "Cross-platform Flutter app providing real-time COVID-19 information and symptom tracking utilities.",
+        description: "Cross-platform Flutter app providing real-time COVID-19 information, vaccination centers, and symptom tracking utilities.",
         tags: ["Flutter", "Dart", "API Integration"],
         link: "https://github.com/bishal9874",
-        color: "bg-red-500/10 text-red-600 dark:text-red-500",
-        borderColor: "border-red-500/20"
+        color: "text-red-500"
     },
     {
         title: "Secure Ration System",
         category: "Web & IoT",
-        description: "Biometric face authentication system (92% accuracy) for secure public distribution. Included Next.js dashboard.",
-        tags: ["Next.js", "Tailwind", "Python", "Face Auth"],
+        description: "Biometric face authentication system (92% accuracy) for secure public distribution. Included Next.js dashboard for admin control.",
+        tags: ["Next.js", "Python", "Face Auth", "IoT"],
         link: "https://github.com/bishal9874",
-        color: "bg-blue-500/10 text-blue-600 dark:text-blue-500",
-        borderColor: "border-blue-500/20"
+        color: "text-blue-500"
     },
     {
         title: "Aura - Safety Device",
         category: "IoT & Mobile",
-        description: "Wearable safety device integrated with Flutter mobile app for SOS alerts, GPS tracking, and emergency contacts.",
+        description: "Wearable safety device integrated with Flutter mobile app for SOS alerts, real-time GPS tracking, and emergency contacts.",
         tags: ["IoT", "Flutter", "GPS", "Hardware"],
         link: "https://github.com/bishal9874",
-        color: "bg-purple-500/10 text-purple-600 dark:text-purple-500",
-        borderColor: "border-purple-500/20"
+        color: "text-purple-500"
     },
     {
         title: "Obuddy Campus App",
         category: "Mobile App",
-        description: "Interactive campus utility app for orientation, navigation, and helpline, improving efficiency for 500+ students.",
+        description: "Interactive campus utility app for orientation, navigation, and helpline, improving efficiency for 500+ students during admission.",
         tags: ["Flutter", "UX Design", "Campus"],
         link: "https://play.google.com/store/apps/details?id=include_package_name_here",
-        color: "bg-green-500/10 text-green-600 dark:text-green-500",
-        borderColor: "border-green-500/20"
+        color: "text-green-500"
     },
     {
         title: "ClassMonitor System",
         category: "Education Tech",
-        description: "Streamlined attendance and workflow management system for 50+ students. Automated slippage record generation.",
+        description: "Streamlined attendance and workflow management system for 50+ students. Automated slippage record generation and reporting.",
         tags: ["Flutter", "Dart", "Management"],
         link: "#",
-        color: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-500",
-        borderColor: "border-indigo-500/20"
+        color: "text-indigo-500"
     }
 ];
 
 export default function Projects() {
     return (
-        <section id="projects" className="py-24 bg-zinc-50 dark:bg-black px-6 transition-colors duration-300">
-            <div className="max-w-7xl mx-auto">
+        <section id="projects" className="py-24 relative bg-zinc-50 dark:bg-black transition-colors duration-300 overflow-hidden">
+            {/* Background Blobs */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-500/10 via-transparent to-transparent pointer-events-none" />
+
+            <div className="max-w-7xl mx-auto px-6 relative z-10">
                 <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
                     <div>
-                        <span className="text-green-600 dark:text-green-500 font-mono text-sm tracking-wider uppercase mb-2 block">Portfolio</span>
-                        <h2 className="text-3xl md:text-5xl font-bold text-zinc-900 dark:text-white">Featured Projects</h2>
+                        <span className="text-green-600 dark:text-green-500 font-mono text-sm tracking-wider uppercase mb-2 block animate-fade-in">Portfolio</span>
+                        <h2 className="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-white leading-tight">
+                            Selected <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-500">Works</span>
+                        </h2>
                     </div>
-                    <a href="https://github.com/bishal9874" target="_blank" rel="noopener noreferrer" className="px-6 py-2 rounded-full border border-zinc-300 dark:border-white/20 text-zinc-900 dark:text-white hover:bg-zinc-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-all text-sm font-medium">
-                        View GitHub Profile →
+                    <a href="https://github.com/bishal9874" target="_blank" rel="noopener noreferrer" className="group flex items-center gap-2 px-6 py-3 rounded-full bg-white dark:bg-white/5 border border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-white hover:bg-zinc-100 dark:hover:bg-white/10 transition-all font-medium">
+                        <Github size={18} />
+                        <span>View GitHub</span>
+                        <ArrowUpRight size={18} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                     </a>
                 </div>
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {projects.map((project, idx) => (
-                        <div key={idx} className="group relative bg-white dark:bg-neutral-900 border border-zinc-200 dark:border-white/5 rounded-2xl overflow-hidden hover:border-zinc-300 dark:hover:border-white/10 transition-all duration-300 hover:-translate-y-1 shadow-sm hover:shadow-md dark:shadow-none">
+                        <div key={idx} className="group relative bg-white dark:bg-white/5 backdrop-blur-sm border border-zinc-200 dark:border-white/10 rounded-2xl overflow-hidden hover:border-zinc-300 dark:hover:border-white/20 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl dark:shadow-none">
                             <div className="p-8 h-full flex flex-col">
-                                <div className={`w-fit px-3 py-1 rounded-full text-xs font-medium border mb-4 ${project.color} ${project.borderColor}`}>
-                                    {project.category}
+                                <div className="flex justify-between items-start mb-6">
+                                    <div className="p-3 rounded-xl bg-zinc-100 dark:bg-white/5 text-zinc-900 dark:text-white border border-zinc-200 dark:border-white/5 group-hover:bg-white dark:group-hover:bg-white/10 transition-colors">
+                                        <Folder size={24} className={project.color} />
+                                    </div>
+                                    <div className="flex gap-2">
+                                        {project.link !== "#" && (
+                                            <a href={project.link} target="_blank" rel="noopener noreferrer" className="p-2 text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">
+                                                <ExternalLink size={20} />
+                                            </a>
+                                        )}
+                                    </div>
                                 </div>
 
                                 <h3 className="text-2xl font-bold text-zinc-900 dark:text-white mb-3 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
@@ -99,7 +109,9 @@ export default function Projects() {
 
                                 <div className="flex flex-wrap gap-2 mt-auto">
                                     {project.tags.map(tag => (
-                                        <span key={tag} className="text-xs text-zinc-500 dark:text-gray-500 font-mono">#{tag}</span>
+                                        <span key={tag} className="px-2 py-1 text-[11px] uppercase tracking-wider font-semibold text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-white/5 rounded border border-zinc-200 dark:border-white/5">
+                                            {tag}
+                                        </span>
                                     ))}
                                 </div>
                             </div>
