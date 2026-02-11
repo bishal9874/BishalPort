@@ -8,7 +8,7 @@ import { format } from 'date-fns';
 export default function AdminPortal() {
     const [auth, setAuth] = useState(false);
     const [creds, setCreds] = useState({ id: "", pass: "" });
-    const [view, setView] = useState<'create' | 'submissions'>('create');
+    const [view, setView] = useState<'create' | 'submissions' | 'assignments'>('create');
 
     // Form State
     const [assignment, setAssignment] = useState({
@@ -18,9 +18,11 @@ export default function AdminPortal() {
     });
     const [loading, setLoading] = useState(false);
     const [submissions, setSubmissions] = useState<any[]>([]);
+    const [createdAssignments, setCreatedAssignments] = useState<any[]>([]);
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
+        // TODO: Move credentials to env vars for better security
         if (creds.id === "admin" && creds.pass === "admin") {
             setAuth(true);
         } else {
@@ -39,6 +41,7 @@ export default function AdminPortal() {
             });
             alert("Assignment Posted!");
             setAssignment({ title: "", description: "", deadline: "" });
+            if (view === 'assignments') fetchCreatedAssignments();
         } catch (error) {
             console.error("Error creating assignment", error);
             alert("Failed to post assignment. Check Firebase Config.");
@@ -53,9 +56,17 @@ export default function AdminPortal() {
         setSubmissions(subs);
     };
 
+    const fetchCreatedAssignments = async () => {
+        const q = query(collection(db, "assignments"), orderBy("deadline", "desc"));
+        const querySnapshot = await getDocs(q);
+        const tasks = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setCreatedAssignments(tasks);
+    };
+
     useEffect(() => {
-        if (auth && view === 'submissions') {
-            fetchSubmissions();
+        if (auth) {
+            if (view === 'submissions') fetchSubmissions();
+            if (view === 'assignments') fetchCreatedAssignments();
         }
     }, [auth, view]);
 
@@ -94,26 +105,32 @@ export default function AdminPortal() {
     return (
         <div className="min-h-screen bg-zinc-950 text-white p-6 md:p-12">
             <div className="max-w-6xl mx-auto">
-                <header className="flex justify-between items-center mb-12 border-b border-zinc-800 pb-6">
+                <header className="flex flex-col md:flex-row justify-between items-center mb-12 border-b border-zinc-800 pb-6 gap-4">
                     <h1 className="text-3xl font-bold">Assignment Dashboard</h1>
-                    <div className="flex gap-4">
+                    <div className="flex gap-2 bg-zinc-900 p-1 rounded-xl">
                         <button
                             onClick={() => setView('create')}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${view === 'create' ? 'bg-orange-600 text-white' : 'hover:bg-zinc-900 text-zinc-400'}`}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors text-sm font-medium ${view === 'create' ? 'bg-orange-600 text-white shadow-lg' : 'hover:bg-zinc-800 text-zinc-400'}`}
                         >
-                            <Plus size={18} /> New Assignment
+                            <Plus size={16} /> New Job
+                        </button>
+                        <button
+                            onClick={() => setView('assignments')}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors text-sm font-medium ${view === 'assignments' ? 'bg-orange-600 text-white shadow-lg' : 'hover:bg-zinc-800 text-zinc-400'}`}
+                        >
+                            <Calendar size={16} /> Posted Tasks
                         </button>
                         <button
                             onClick={() => setView('submissions')}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${view === 'submissions' ? 'bg-orange-600 text-white' : 'hover:bg-zinc-900 text-zinc-400'}`}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors text-sm font-medium ${view === 'submissions' ? 'bg-orange-600 text-white shadow-lg' : 'hover:bg-zinc-800 text-zinc-400'}`}
                         >
-                            <ListChecks size={18} /> Submissions
+                            <ListChecks size={16} /> Submissions
                         </button>
                     </div>
                 </header>
 
-                {view === 'create' ? (
-                    <div className="grid md:grid-cols-2 gap-12">
+                {view === 'create' && (
+                    <div className="grid md:grid-cols-2 gap-12 animate-fade-in">
                         <div className="bg-zinc-900/50 p-8 rounded-2xl border border-zinc-800">
                             <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
                                 <Plus className="text-orange-500" /> Create New Task
@@ -131,10 +148,10 @@ export default function AdminPortal() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm text-zinc-400 mb-2">Instructions / Details</label>
+                                    <label className="block text-sm text-zinc-400 mb-2">Instructions / Question</label>
                                     <textarea
                                         required
-                                        rows={4}
+                                        rows={6}
                                         value={assignment.description}
                                         onChange={(e) => setAssignment({ ...assignment, description: e.target.value })}
                                         className="w-full bg-black border border-zinc-700 p-3 rounded-xl focus:border-orange-500 outline-none resize-none"
@@ -157,51 +174,116 @@ export default function AdminPortal() {
                             </form>
                         </div>
 
-                        <div className="bg-zinc-900/30 p-8 rounded-2xl border border-zinc-800/50 flex items-center justify-center text-zinc-500">
-                            <div className="text-center">
-                                <Calendar size={48} className="mx-auto mb-4 opacity-50" />
-                                <p>Select a deadline to see preview here.</p>
-                            </div>
+                        <div className="bg-zinc-900/30 p-8 rounded-2xl border border-zinc-800/50 flex flex-col items-center justify-center text-zinc-500">
+                            <Calendar size={48} className="mx-auto mb-4 opacity-50 text-orange-500" />
+                            <p className="text-lg font-medium mb-2">Ready to Assign?</p>
+                            <p className="text-sm max-w-xs text-center">Set a clear title and deadline. Students will see this instantly on their portal.</p>
                         </div>
                     </div>
-                ) : (
-                    <div className="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden">
-                        <table className="w-full text-left">
-                            <thead className="bg-black border-b border-zinc-800">
-                                <tr>
-                                    <th className="p-4 text-zinc-400 font-medium">Student Name</th>
-                                    <th className="p-4 text-zinc-400 font-medium">Roll No</th>
-                                    <th className="p-4 text-zinc-400 font-medium">Assignment</th>
-                                    <th className="p-4 text-zinc-400 font-medium">Submitted At</th>
-                                    <th className="p-4 text-zinc-400 font-medium">Details</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {submissions.map((sub) => (
-                                    <tr key={sub.id} className="border-b border-zinc-800/50 hover:bg-zinc-800/30 transition-colors">
-                                        <td className="p-4 font-semibold">{sub.name}</td>
-                                        <td className="p-4 text-zinc-400 font-mono text-sm">{sub.rollNo}</td>
-                                        <td className="p-4">{sub.assignmentTitle}</td>
-                                        <td className="p-4 text-sm text-zinc-500">
-                                            {sub.submittedAt?.seconds ? format(new Date(sub.submittedAt.seconds * 1000), "PP p") : "Just now"}
-                                        </td>
-                                        <td className="p-4">
-                                            <a href={sub.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300">
-                                                <ExternalLink size={16} /> Open
-                                            </a>
-                                        </td>
-                                    </tr>
-                                ))}
-                                {submissions.length === 0 && (
+                )}
+
+                {view === 'assignments' && (
+                    <div className="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden animate-fade-in">
+                        <div className="p-6 border-b border-zinc-800 bg-black/20">
+                            <h2 className="text-xl font-semibold flex items-center gap-2">
+                                <Calendar className="text-orange-500" size={20} /> Your Posted Assignments
+                            </h2>
+                        </div>
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left">
+                                <thead className="bg-black/40 border-b border-zinc-800">
                                     <tr>
-                                        <td colSpan={5} className="p-8 text-center text-zinc-500">No submissions yet.</td>
+                                        <th className="p-4 text-zinc-400 font-medium">Title</th>
+                                        <th className="p-4 text-zinc-400 font-medium whitespace-nowrap">Created Date</th>
+                                        <th className="p-4 text-zinc-400 font-medium whitespace-nowrap">Deadline</th>
+                                        <th className="p-4 text-zinc-400 font-medium">Status</th>
                                     </tr>
-                                )}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {createdAssignments.map((task: any) => {
+                                        const isExpired = itemIsExpired(task.deadline);
+                                        return (
+                                            <tr key={task.id} className="border-b border-zinc-800/50 hover:bg-zinc-800/30 transition-colors">
+                                                <td className="p-4 font-semibold text-white">{task.title}</td>
+                                                <td className="p-4 text-sm text-zinc-500 whitespace-nowrap">
+                                                    {task.createdAt?.seconds ? format(new Date(task.createdAt.seconds * 1000), "MMM d, yyyy") : "N/A"}
+                                                </td>
+                                                <td className="p-4 text-sm text-zinc-300 whitespace-nowrap font-mono">
+                                                    {task.deadline?.seconds ? format(new Date(task.deadline.seconds * 1000), "MMM d, h:mm a") : "No Deadline"}
+                                                </td>
+                                                <td className="p-4">
+                                                    <span className={`px-2 py-1 rounded text-xs font-bold uppercase tracking-wider ${isExpired ? 'bg-red-900/20 text-red-500 border border-red-900/30' : 'bg-green-900/20 text-green-500 border border-green-900/30'}`}>
+                                                        {isExpired ? "Closed" : "Active"}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                    {createdAssignments.length === 0 && (
+                                        <tr>
+                                            <td colSpan={4} className="p-12 text-center text-zinc-500">
+                                                No assignments posted yet. Create one to get started.
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                )}
+
+                {view === 'submissions' && (
+                    <div className="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden animate-fade-in">
+                        <div className="p-6 border-b border-zinc-800 bg-black/20">
+                            <h2 className="text-xl font-semibold flex items-center gap-2">
+                                <ListChecks className="text-orange-500" size={20} /> Student Submissions
+                            </h2>
+                        </div>
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left">
+                                <thead className="bg-black/40 border-b border-zinc-800">
+                                    <tr>
+                                        <th className="p-4 text-zinc-400 font-medium">Student Name</th>
+                                        <th className="p-4 text-zinc-400 font-medium">Roll No</th>
+                                        <th className="p-4 text-zinc-400 font-medium">Assignment</th>
+                                        <th className="p-4 text-zinc-400 font-medium whitespace-nowrap">Submitted At</th>
+                                        <th className="p-4 text-zinc-400 font-medium">Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {submissions.map((sub) => (
+                                        <tr key={sub.id} className="border-b border-zinc-800/50 hover:bg-zinc-800/30 transition-colors">
+                                            <td className="p-4 font-semibold text-white">{sub.name}</td>
+                                            <td className="p-4 text-zinc-400 font-mono text-sm">{sub.rollNo}</td>
+                                            <td className="p-4 text-zinc-300">{sub.assignmentTitle}</td>
+                                            <td className="p-4 text-sm text-zinc-500 whitespace-nowrap">
+                                                {sub.submittedAt?.seconds ? format(new Date(sub.submittedAt.seconds * 1000), "MMM d, h:mm a") : "Just now"}
+                                            </td>
+                                            <td className="p-4">
+                                                <a href={sub.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-900/20 text-blue-400 hover:bg-blue-900/40 hover:text-blue-300 transition-colors text-sm font-medium border border-blue-900/30">
+                                                    <ExternalLink size={14} /> Open Link
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    {submissions.length === 0 && (
+                                        <tr>
+                                            <td colSpan={5} className="p-12 text-center text-zinc-500">
+                                                No submissions received yet.
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 )}
             </div>
         </div>
     );
+}
+
+function itemIsExpired(deadline: any) {
+    if (!deadline) return false;
+    return new Date().getTime() > new Date(deadline.seconds * 1000).getTime();
 }
