@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { db } from '@/lib/firebase';
 import { collection, query, orderBy, getDocs, addDoc, Timestamp } from 'firebase/firestore';
 import { formatDistanceToNow } from 'date-fns';
-import { Clock, CheckCircle, UploadCloud, AlertCircle, FileText, Link as LinkIcon, ArrowRight, X } from 'lucide-react';
+import { Clock, CheckCircle, UploadCloud, AlertCircle, FileText, Link as LinkIcon, ArrowRight, X, ChevronRight } from 'lucide-react';
 
 interface Assignment {
     id: string;
@@ -69,12 +69,12 @@ export default function StudentPortal() {
 
     return (
         <div className="min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-white pt-24 pb-12 px-6">
-            <div className="max-w-5xl mx-auto">
+            <div className="max-w-6xl mx-auto">
                 <div className="mb-12">
                     <span className="text-orange-600 dark:text-orange-500 font-mono text-sm tracking-wider uppercase mb-2 block">Student Portal</span>
                     <h1 className="text-4xl font-bold mb-4">Active Assignments</h1>
                     <p className="text-zinc-500 dark:text-gray-400 max-w-2xl">
-                        Select an assignment below to view details and submit your work. Check deadlines carefully!
+                        Select an assignment below to view the full question and submit your work.
                     </p>
                 </div>
 
@@ -100,33 +100,17 @@ export default function StudentPortal() {
                                         </div>
                                     </div>
 
-                                    <h3 className="text-xl font-bold mb-4">{task.title}</h3>
-
-                                    {/* Question Box */}
-                                    <div className="bg-zinc-50 dark:bg-zinc-800/50 p-4 rounded-xl mb-6 border border-zinc-100 dark:border-white/5 flex-grow">
-                                        <div className="flex items-center gap-2 mb-2 text-zinc-400">
-                                            <FileText size={14} />
-                                            <span className="text-xs font-semibold uppercase tracking-wider">Question / Task</span>
-                                        </div>
-                                        <p className="text-zinc-700 dark:text-zinc-300 whitespace-pre-wrap leading-relaxed">
-                                            {task.description}
-                                        </p>
-                                    </div>
+                                    <h3 className="text-xl font-bold mb-2 flex-grow">{task.title}</h3>
 
                                     <button
                                         onClick={() => {
-                                            if (!expired) {
-                                                setSelectedTask(task);
-                                                setSubmitted(false);
-                                                setFormData({ name: "", rollNo: "", link: "", message: "" });
-                                            }
+                                            setSelectedTask(task);
+                                            setSubmitted(false);
+                                            setFormData({ name: "", rollNo: "", link: "", message: "" });
                                         }}
-                                        disabled={expired}
-                                        className={`w-full py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all ${expired
-                                            ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400 cursor-not-allowed'
-                                            : 'bg-zinc-900 dark:bg-white text-white dark:text-black hover:opacity-90'}`}
+                                        className={`w-full py-3 mt-4 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all border border-zinc-200 dark:border-white/10 hover:bg-zinc-50 dark:hover:bg-zinc-800`}
                                     >
-                                        {expired ? "Submission Closed" : "Submit Assignment"} <ArrowRight size={16} />
+                                        View & Submit <ChevronRight size={16} />
                                     </button>
                                 </div>
                             );
@@ -141,68 +125,102 @@ export default function StudentPortal() {
                 )}
             </div>
 
-            {/* Submission Modal */}
+            {/* View & Submit Modal */}
             {selectedTask && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-                    <div className="bg-white dark:bg-zinc-900 w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden border border-zinc-200 dark:border-white/10 animate-fade-in-up">
-                        <div className="p-6 border-b border-zinc-100 dark:border-white/5 flex justify-between items-center">
-                            <h3 className="font-bold text-lg truncate pr-4">Submit: {selectedTask.title}</h3>
-                            <button onClick={() => setSelectedTask(null)} className="p-2 hover:bg-zinc-100 dark:hover:bg-white/5 rounded-full text-zinc-500">
-                                <X size={20} />
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
+                    <div className="bg-white dark:bg-zinc-900 w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden border border-zinc-200 dark:border-white/10 animate-fade-in-up my-auto max-h-[90vh] flex flex-col">
+
+                        {/* Header */}
+                        <div className="p-6 border-b border-zinc-200 dark:border-white/10 flex justify-between items-center bg-zinc-50 dark:bg-black/20 shrink-0">
+                            <div>
+                                <h3 className="font-bold text-xl">{selectedTask.title}</h3>
+                                <p className="text-sm text-zinc-500 flex items-center gap-2 mt-1">
+                                    <Clock size={14} />
+                                    Due: {selectedTask.deadline ? new Date(selectedTask.deadline.seconds * 1000).toLocaleString() : "No Deadline"}
+                                </p>
+                            </div>
+                            <button onClick={() => setSelectedTask(null)} className="p-2 hover:bg-zinc-200 dark:hover:bg-white/10 rounded-full text-zinc-500 transition-colors">
+                                <X size={24} />
                             </button>
                         </div>
 
-                        {submitted ? (
-                            <div className="p-12 text-center">
-                                <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <CheckCircle size={32} />
+                        <div className="flex flex-col md:flex-row h-full overflow-hidden">
+                            {/* Left Panel: Question Details */}
+                            <div className="flex-1 p-8 overflow-y-auto bg-white dark:bg-zinc-900 border-b md:border-b-0 md:border-r border-zinc-200 dark:border-white/10">
+                                <div className="flex items-center gap-2 mb-4 text-orange-600 dark:text-orange-500">
+                                    <FileText size={20} />
+                                    <span className="font-mono text-sm uppercase tracking-wider font-bold">Problem Statement</span>
                                 </div>
-                                <h3 className="text-2xl font-bold mb-2">Submitted!</h3>
-                                <p className="text-zinc-500 dark:text-zinc-400 mb-6">Your assignment has been recorded securely in the database.</p>
-                                <button onClick={() => setSelectedTask(null)} className="text-blue-600 font-medium hover:underline">Close</button>
-                            </div>
-                        ) : (
-                            <form onSubmit={handleSubmit} className="p-6 space-y-4">
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="space-y-1">
-                                        <label className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">Name</label>
-                                        <input required type="text" placeholder="Your Name"
-                                            value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })}
-                                            className="w-full p-3 bg-zinc-50 dark:bg-black border border-zinc-200 dark:border-white/10 rounded-xl outline-none focus:border-orange-500 transition-colors" />
-                                    </div>
-                                    <div className="space-y-1">
-                                        <label className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">Roll No</label>
-                                        <input required type="text" placeholder="Your ID"
-                                            value={formData.rollNo} onChange={e => setFormData({ ...formData, rollNo: e.target.value })}
-                                            className="w-full p-3 bg-zinc-50 dark:bg-black border border-zinc-200 dark:border-white/10 rounded-xl outline-none focus:border-orange-500 transition-colors" />
-                                    </div>
-                                </div>
-
-                                <div className="space-y-1">
-                                    <label className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">File Link (Docs/Drive)</label>
-                                    <div className="relative">
-                                        <LinkIcon className="absolute left-3 top-3.5 text-zinc-400" size={16} />
-                                        <input required type="url" placeholder="Paste link here..."
-                                            value={formData.link} onChange={e => setFormData({ ...formData, link: e.target.value })}
-                                            className="w-full pl-10 pr-4 py-3 bg-zinc-50 dark:bg-black border border-zinc-200 dark:border-white/10 rounded-xl outline-none focus:border-orange-500 transition-colors" />
-                                    </div>
-                                    <p className="text-[10px] text-orange-500 flex items-center gap-1">
-                                        <AlertCircle size={10} /> Ensure link is accessible (Public/Shared)
+                                <div className="prose dark:prose-invert max-w-none text-zinc-700 dark:text-zinc-300">
+                                    <p className="whitespace-pre-wrap leading-relaxed text-sm md:text-base">
+                                        {selectedTask.description}
                                     </p>
                                 </div>
+                            </div>
 
-                                <div className="space-y-1">
-                                    <label className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">Note (Optional)</label>
-                                    <textarea rows={2} placeholder="Any comments..."
-                                        value={formData.message} onChange={e => setFormData({ ...formData, message: e.target.value })}
-                                        className="w-full p-3 bg-zinc-50 dark:bg-black border border-zinc-200 dark:border-white/10 rounded-xl outline-none focus:border-orange-500 transition-colors resize-none" />
-                                </div>
+                            {/* Right Panel: Submission Form */}
+                            <div className="w-full md:w-[350px] shrink-0 bg-zinc-50 dark:bg-black/40 p-6 overflow-y-auto">
+                                {isExpired(selectedTask.deadline) ? (
+                                    <div className="h-full flex flex-col items-center justify-center text-center p-4 text-zinc-500">
+                                        <Clock size={48} className="mb-4 opacity-50" />
+                                        <h4 className="text-lg font-bold mb-2">Submission Closed</h4>
+                                        <p className="text-sm">The deadline for this assignment has passed.</p>
+                                    </div>
+                                ) : submitted ? (
+                                    <div className="h-full flex flex-col items-center justify-center text-center">
+                                        <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full flex items-center justify-center mb-6">
+                                            <CheckCircle size={32} />
+                                        </div>
+                                        <h3 className="text-xl font-bold mb-2">Received!</h3>
+                                        <p className="text-zinc-500 dark:text-zinc-400 mb-6 text-sm">Your assignment has been recorded securely.</p>
+                                        <button onClick={() => setSelectedTask(null)} className="text-blue-600 font-medium hover:underline text-sm">Close Window</button>
+                                    </div>
+                                ) : (
+                                    <form onSubmit={handleSubmit} className="space-y-4">
+                                        <h4 className="font-bold text-lg mb-4 flex items-center gap-2">
+                                            <UploadCloud size={20} /> Submit Work
+                                        </h4>
 
-                                <button type="submit" disabled={submitting} className="w-full py-4 mt-4 bg-zinc-900 dark:bg-white text-white dark:text-black font-bold rounded-xl flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
-                                    {submitting ? "Uploading..." : <><UploadCloud size={20} /> Submit Now</>}
-                                </button>
-                            </form>
-                        )}
+                                        <div className="space-y-1">
+                                            <label className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">Full Name</label>
+                                            <input required type="text" placeholder="John Doe"
+                                                value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })}
+                                                className="w-full p-3 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 rounded-xl outline-none focus:border-orange-500 transition-colors text-sm" />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">Roll Number</label>
+                                            <input required type="text" placeholder="MCA/23/042"
+                                                value={formData.rollNo} onChange={e => setFormData({ ...formData, rollNo: e.target.value })}
+                                                className="w-full p-3 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 rounded-xl outline-none focus:border-orange-500 transition-colors text-sm" />
+                                        </div>
+
+                                        <div className="space-y-1">
+                                            <label className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">File Link (Docs/Drive)</label>
+                                            <div className="relative">
+                                                <LinkIcon className="absolute left-3 top-3.5 text-zinc-400" size={16} />
+                                                <input required type="url" placeholder="https://docs.google.com/..."
+                                                    value={formData.link} onChange={e => setFormData({ ...formData, link: e.target.value })}
+                                                    className="w-full pl-9 pr-4 py-3 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 rounded-xl outline-none focus:border-orange-500 transition-colors text-sm" />
+                                            </div>
+                                            <p className="text-[10px] text-orange-500 flex items-center gap-1 pt-1">
+                                                <AlertCircle size={10} /> Must be public/shared link
+                                            </p>
+                                        </div>
+
+                                        <div className="space-y-1">
+                                            <label className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">Note (Optional)</label>
+                                            <textarea rows={3} placeholder="Any comments..."
+                                                value={formData.message} onChange={e => setFormData({ ...formData, message: e.target.value })}
+                                                className="w-full p-3 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 rounded-xl outline-none focus:border-orange-500 transition-colors resize-none text-sm" />
+                                        </div>
+
+                                        <button type="submit" disabled={submitting} className="w-full py-3 mt-2 bg-zinc-900 dark:bg-white text-white dark:text-black font-bold rounded-xl flex items-center justify-center gap-2 hover:opacity-90 transition-opacity shadow-lg text-sm">
+                                            {submitting ? "Uploading..." : "Submit Assignment"}
+                                        </button>
+                                    </form>
+                                )}
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}
