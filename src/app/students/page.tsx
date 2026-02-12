@@ -132,34 +132,60 @@ export default function StudentPortal() {
 
                         {/* Header */}
                         <div className="p-6 border-b border-zinc-200 dark:border-white/10 flex justify-between items-center bg-zinc-50 dark:bg-black/20 shrink-0">
-                            <div>
-                                <h3 className="font-bold text-xl">{selectedTask.title}</h3>
+                            <div className="flex-1 pr-4 min-w-0">
+                                <h3 className="font-bold text-xl break-words">{selectedTask.title}</h3>
                                 <p className="text-sm text-zinc-500 flex items-center gap-2 mt-1">
                                     <Clock size={14} />
                                     Due: {selectedTask.deadline ? new Date(selectedTask.deadline.seconds * 1000).toLocaleString() : "No Deadline"}
                                 </p>
                             </div>
-                            <button onClick={() => setSelectedTask(null)} className="p-2 hover:bg-zinc-200 dark:hover:bg-white/10 rounded-full text-zinc-500 transition-colors">
+                            <button onClick={() => setSelectedTask(null)} className="p-2 shrink-0 hover:bg-zinc-200 dark:hover:bg-white/10 rounded-full text-zinc-500 transition-colors">
                                 <X size={24} />
                             </button>
                         </div>
 
-                        <div className="flex flex-col md:flex-row h-full overflow-hidden">
+                        <div className="flex flex-col md:flex-row flex-1 min-h-0 overflow-y-auto md:overflow-hidden">
                             {/* Left Panel: Question Details */}
-                            <div className="flex-1 p-8 overflow-y-auto bg-white dark:bg-zinc-900 border-b md:border-b-0 md:border-r border-zinc-200 dark:border-white/10">
-                                <div className="flex items-center gap-2 mb-4 text-orange-600 dark:text-orange-500">
-                                    <FileText size={20} />
-                                    <span className="font-mono text-sm uppercase tracking-wider font-bold">Problem Statement</span>
+                            {/* Left Panel: Question Details (LeetCode Style) */}
+                            <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-zinc-900 border-b md:border-b-0 md:border-r border-zinc-200 dark:border-white/10">
+                                {/* Tabs Header */}
+                                <div className="flex items-center gap-6 px-6 border-b border-zinc-200 dark:border-white/10 bg-zinc-50/50 dark:bg-zinc-900/50 shrink-0">
+                                    <button className="py-3 text-sm font-medium text-black dark:text-white border-b-2 border-black dark:border-white flex items-center gap-2">
+                                        <FileText size={16} className="text-blue-500" />
+                                        Description
+                                    </button>
+                                    <button className="py-3 text-sm font-medium text-zinc-400 dark:text-zinc-600 cursor-not-allowed hidden sm:block">
+                                        Editorial
+                                    </button>
+                                    <button className="py-3 text-sm font-medium text-zinc-400 dark:text-zinc-600 cursor-not-allowed hidden sm:block">
+                                        Solutions
+                                    </button>
                                 </div>
-                                <div className="prose dark:prose-invert max-w-none text-zinc-700 dark:text-zinc-300">
-                                    <p className="whitespace-pre-wrap leading-relaxed text-sm md:text-base">
-                                        {selectedTask.description}
-                                    </p>
+
+                                {/* Scrollable Content */}
+                                <div className="flex-1 p-6 md:p-8 overflow-visible md:overflow-y-auto custom-scrollbar">
+                                    <div className="mb-6">
+                                        <h2 className="text-2xl font-bold mb-3 dark:text-white">{selectedTask.title}</h2>
+                                        <div className="flex items-center gap-3">
+                                            <span className="px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 text-xs font-medium text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-white/5">
+                                                {selectedTask.id.substring(0, 4).toUpperCase()}
+                                            </span>
+                                            <span className="px-3 py-1 rounded-full bg-green-100 dark:bg-green-500/10 text-green-700 dark:text-green-400 text-xs font-medium border border-green-200 dark:border-green-500/20">
+                                                Medium
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div className="prose dark:prose-invert max-w-none text-zinc-700 dark:text-zinc-300">
+                                        <div className="whitespace-pre-wrap break-words leading-relaxed text-[15px] font-sans">
+                                            {selectedTask.description}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
                             {/* Right Panel: Submission Form */}
-                            <div className="w-full md:w-[350px] shrink-0 bg-zinc-50 dark:bg-black/40 p-6 overflow-y-auto">
+                            <div className="w-full md:w-[350px] shrink-0 bg-zinc-50 dark:bg-black/40 p-6 overflow-visible md:overflow-y-auto">
                                 {isExpired(selectedTask.deadline) ? (
                                     <div className="h-full flex flex-col items-center justify-center text-center p-4 text-zinc-500">
                                         <Clock size={48} className="mb-4 opacity-50" />
